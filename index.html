@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="PixelNest — адаптивная галерея изображений с фильтрацией по категориям и тегам, синхронизацией состояния с URL, поиском, сортировкой и возможностью поделиться готовой ссылкой."
+    />
+    <meta name="theme-color" content="#0b1120" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="PixelNest — галерея изображений с умной фильтрацией" />
+    <meta
+      property="og:description"
+      content="Фильтруйте галерею по категориям и тегам, сохраняйте состояние в URL и делитесь готовой ссылкой."
+    />
+    <meta property="og:image" content="./assets/images/social-cover.jpg" />
+    <meta property="og:locale" content="ru_RU" />
+    <title>PixelNest — Галерея с умной фильтрацией</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#gallery">Перейти к галерее</a>
+
+    <div class="page-shell">
+      <header class="hero" aria-labelledby="hero-title">
+        <div class="hero__content">
+          <div class="hero__text">
+            <p class="eyebrow">Выпускной проект по веб-дизайну</p>
+            <h1 id="hero-title">PixelNest — галерея изображений с умной фильтрацией</h1>
+            <p class="hero__lead">
+              Категории, теги, поиск, сортировка и шаринг одной ссылкой. Состояние интерфейса
+              сохраняется в URL, поэтому друг откроет уже готовую подборку, а не стартовый экран.
+            </p>
+
+            <div class="hero__actions">
+              <button id="shareButton" class="button button--primary" type="button">
+                Поделиться ссылкой с фильтрами
+              </button>
+              <button id="copyLinkButton" class="button button--secondary" type="button">
+                Скопировать URL
+              </button>
+              <button id="resetButton" class="button button--ghost" type="button">
+                Сбросить всё
+              </button>
+            </div>
+
+            <div class="hero__meta" aria-live="polite">
+              <span id="resultsCounter" class="status-chip">Найдено: 0</span>
+              <span id="activeFiltersCounter" class="status-chip">Активных фильтров: 0</span>
+              <span id="sortModeChip" class="status-chip">Сортировка: По умолчанию</span>
+            </div>
+
+            <label class="link-box" for="currentUrlField">
+              <span class="link-box__label">Текущая ссылка обновляется автоматически</span>
+              <input id="currentUrlField" class="link-box__input" type="text" readonly />
+            </label>
+          </div>
+
+          <aside class="hero-preview panel panel--preview" aria-labelledby="preview-title">
+            <div class="hero-preview__media-wrap">
+              <img
+                id="previewImage"
+                class="hero-preview__image"
+                src=""
+                alt=""
+                width="1600"
+                height="1067"
+              />
+            </div>
+            <div class="hero-preview__body">
+              <div class="hero-preview__topline">
+                <span class="eyebrow eyebrow--soft">Живой предпросмотр</span>
+                <span id="previewCategory" class="preview-badge">Категория</span>
+              </div>
+              <h2 id="preview-title" class="hero-preview__title">—</h2>
+              <p id="previewDescription" class="hero-preview__description">—</p>
+              <div id="previewTags" class="hero-preview__tags"></div>
+              <div class="hero-preview__actions">
+                <button id="openPreviewButton" class="button button--secondary" type="button">
+                  Открыть в полном размере
+                </button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </header>
+
+      <noscript>
+        <section class="panel noscript-panel">
+          <h2>Для работы проекта нужен JavaScript</h2>
+          <p>
+            Фильтрация, сохранение параметров в URL, поиск и кнопка шаринга работают только при
+            включённом JavaScript.
+          </p>
+        </section>
+      </noscript>
+
+      <main class="layout">
+        <aside class="panel filters-panel" aria-labelledby="filters-title">
+          <div class="panel__header">
+            <h2 id="filters-title">Фильтры</h2>
+            <p>
+              Категория выбирается как основной срез, а теги работают совместно. Счётчики рядом с
+              опциями показывают, сколько карточек останется после применения конкретного выбора.
+            </p>
+          </div>
+
+          <form id="filtersForm" class="filters" novalidate>
+            <fieldset class="filter-group">
+              <legend>Категория</legend>
+              <div id="categoryFilters" class="filter-group__content filter-group__content--stack"></div>
+            </fieldset>
+
+            <fieldset class="filter-group">
+              <legend>Теги</legend>
+              <div id="tagFilters" class="filter-group__content"></div>
+            </fieldset>
+          </form>
+        </aside>
+
+        <section class="content-area" aria-labelledby="gallery-title">
+          <div class="panel toolbar">
+            <div class="toolbar__controls" aria-label="Дополнительные инструменты галереи">
+              <label class="control-field" for="searchInput">
+                <span>Поиск по названию и описанию</span>
+                <input
+                  id="searchInput"
+                  class="control-input"
+                  type="search"
+                  placeholder="Например: неон, музей, море..."
+                  autocomplete="off"
+                />
+              </label>
+
+              <label class="control-field" for="sortSelect">
+                <span>Сортировка</span>
+                <select id="sortSelect" class="control-input"></select>
+              </label>
+            </div>
+
+            <div id="selectedFilters" class="selected-filters" aria-live="polite"></div>
+          </div>
+
+          <section id="gallery" class="gallery" aria-label="Галерея изображений"></section>
+
+          <section id="emptyState" class="empty-state" hidden aria-live="polite">
+            <h3>Совпадений не найдено</h3>
+            <p>
+              Попробуйте убрать часть тегов, очистить поиск или выбрать другую категорию. Ссылка в
+              адресной строке обновится автоматически.
+            </p>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="lightbox" class="lightbox" hidden>
+      <div class="lightbox__backdrop" data-lightbox-close></div>
+      <section
+        class="lightbox__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="lightboxTitle"
+      >
+        <button
+          class="icon-button lightbox__close"
+          type="button"
+          aria-label="Закрыть просмотр"
+          data-lightbox-close
+        >
+          ×
+        </button>
+
+        <div class="lightbox__media">
+          <img id="lightboxImage" class="lightbox__image" src="" alt="" />
+        </div>
+
+        <div class="lightbox__sidebar">
+          <span id="lightboxCategory" class="preview-badge">Категория</span>
+          <h3 id="lightboxTitle">—</h3>
+          <p id="lightboxDescription">—</p>
+          <p id="lightboxMeta" class="meta-row">—</p>
+          <div id="lightboxTags" class="card__tags card__tags--wrap"></div>
+
+          <div class="lightbox__nav">
+            <button id="lightboxPrev" class="button button--secondary" type="button">
+              ← Предыдущее
+            </button>
+            <button id="lightboxNext" class="button button--secondary" type="button">
+              Следующее →
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
