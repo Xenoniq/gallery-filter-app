@@ -667,6 +667,19 @@ select {
     var(--panel);
 }
 
+.site-footer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 30px auto 0;
+  padding: 0;
+  color: rgba(200, 203, 224, 0.68);
+  font-size: 0.86rem;
+  line-height: 1.6;
+  text-align: center;
+  text-wrap: balance;
+}
+
 .toast {
   position: fixed;
   right: 20px;
