@@ -68,5 +68,3 @@ gallery-filter-app/
     ├── data.js
     └── url-state.js
 ```
-
-
